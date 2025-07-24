@@ -91,7 +91,7 @@ pip install tkinter
   source .venv/bin/activate
   pip install tkinter
   ```
-- Installing Tkinter Gloabally in the system
+- Installing Tkinter Globally in the system
 
   - Debian / Ubuntu Based Distros
 
