@@ -7,7 +7,7 @@ class App:
   def __init__(self, master):
     self.master = master
     self.master.title("Students Manager")
-    self.master.geometry("720x400")
+    self.master.geometry("360x600") # Phone Friendly Size
 
     # Create UI Elements
     self.create_widgets()
