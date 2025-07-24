@@ -73,49 +73,4 @@ python --version
 # 2️⃣ Run the Python file:
 python app.py
 ```
-
-### If it didn't work then you'll have to install Tkinter
-
-### On Windows
-
-```bash
-# 1️⃣ Installing Tkinter
-pip install tkinter
-```
-
-### On Linux, Mac:
-
-- Installing in a Virtual Environment (Recommended)
-  ```bash
-  python3 -m venv .venv
-  source .venv/bin/activate
-  pip install tkinter
-  ```
-- Installing Tkinter Gloabally in the system
-
-  - Debian / Ubuntu Based Distros
-
-  ```bash
-  sudo apt install python3-tk
-  ```
-
-  - Fedora
-
-  ```bash
-  sudo dnf install python3-tkinter
-  ```
-
-  - Arch
-
-  ```bash
-  sudo pacman -S tk
-  ```
-
-  ### To Test if tkinter is working type in terminal:
-
-  ```bash
-  python3 -m tkinter
-  # Should Popup a Window
-  ```
-
 ### Then you are ready to go.
