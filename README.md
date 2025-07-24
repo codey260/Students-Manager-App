@@ -29,7 +29,7 @@ This project demonstrates basic CRUD operations for managing students and shows 
 
 ---
 
-## 💾 Data Persistence
+## 💾 Data Storing
 
 **How does it store the data?**
 
