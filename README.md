@@ -11,8 +11,7 @@ This project demonstrates basic CRUD operations for managing students and shows 
 - **Name:** Students Manager
 - **Type:** Python GUI Application
 - **Purpose:** Add, remove, check, display, and clear students easily through an intuitive GUI.
-- **Original Logic:** Created by `youcefshaaban`.
-- **GUI Integration:** Implemented with `tkinter` and smart in-memory storage.
+- **GUI Integration:** Implemented with `tkinter` and smart data persistence
 
 ---
 
@@ -29,16 +28,12 @@ This project demonstrates basic CRUD operations for managing students and shows 
 
 ---
 
-## 💾 Data Storing
+## 💾 Data Persistence
 
 **How does it store the data?**
 
-- This project uses **In-Memory Serialization** (`pickle`) to store the list of students **inside the program memory only**.
-- The data **will persist as long as the program is running**.
-- **Note:** Once you close and re-open the app, the student list resets because no external files or databases are used.
-
-This approach is perfect for simple demos and educational use.
-
+- This project uses **Smart Data Serialization** (`json`) to store the list of students **in a json file**.
+- The data **will persist as long as the data.json file is found**.
 ---
 
 ## ✅ Requirements
@@ -48,7 +43,7 @@ To run this project, you need:
 - **Python 3.7+**
 - Standard Python library only:
   - `tkinter` (usually bundled with Python)
-  - `pickle` (built-in)
+  - `json` (built-in)
 
 No third-party packages required.
 
@@ -68,9 +63,9 @@ This project runs on:
 
 ```bash
 # 1️⃣ Make sure you have Python installed:
-python --version
+python3 --version
 
 # 2️⃣ Run the Python file:
-python app.py
+python3 app.py
 ```
 ### Then you are ready to go.
