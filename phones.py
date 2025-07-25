@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, Listbox, Scrollbar
+from tkinter import messagebox, Listbox, Scrollbar, simpledialog
 import json
 import os
 
@@ -7,7 +7,7 @@ class App:
   def __init__(self, master):
     self.master = master
     self.master.title("Students Manager")
-    self.master.geometry("360x600") # Phone Friendly Size
+    self.master.geometry("320x335") # Phone Friendly Size
 
     # Create UI Elements
     self.create_widgets()
@@ -35,47 +35,47 @@ class App:
 
   def create_widgets(self):
       # Title Label
-      title = tk.Label(self.master, text="Students Manager", font=("Helvetica", 24, "bold"))
-      title.pack(pady=10)
+      title = tk.Label(self.master, text="Students Manager", font=("Helvetica", 18, "bold"))
+      title.pack(pady=5)
 
       # Student Name Entry
       self.entry_var = tk.StringVar()
       entry_frame = tk.Frame(self.master)
-      entry_frame.pack(pady=10)
+      entry_frame.pack(pady=5)
 
-      entry_label = tk.Label(entry_frame, text="Student Name:", font=("Helvetica", 14))
-      entry_label.pack(side=tk.LEFT, padx=5)
+      entry_label = tk.Label(entry_frame, text="Student Name:", font=("Helvetica", 12))
+      entry_label.pack(side=tk.LEFT)
 
-      entry = tk.Entry(entry_frame, textvariable=self.entry_var, font=("Helvetica", 14), width=30)
-      entry.pack(side=tk.LEFT, padx=5)
+      entry = tk.Entry(entry_frame, textvariable=self.entry_var, font=("Helvetica", 12), width=30)
+      entry.pack(side=tk.LEFT)
 
       # Buttons Frame
       buttons_frame = tk.Frame(self.master)
-      buttons_frame.pack(pady=10)
+      buttons_frame.pack(pady=5)
 
-      add_btn = tk.Button(buttons_frame, text="Add Student", command=self.add_student, width=15)
-      add_btn.grid(row=0, column=0, padx=5)
+      add_btn = tk.Button(buttons_frame, text="Add Student", command=self.add_student, width=10)
+      add_btn.grid(row=0, column=0)
 
-      remove_btn = tk.Button(buttons_frame, text="Remove Student", command=self.remove_student, width=15)
-      remove_btn.grid(row=0, column=1, padx=5)
+      remove_btn = tk.Button(buttons_frame, text="Remove Student", command=self.remove_student, width=10)
+      remove_btn.grid(row=0, column=1)
 
-      check_btn = tk.Button(buttons_frame, text="Check Student", command=self.check_student, width=15)
-      check_btn.grid(row=0, column=2, padx=5)
+      check_btn = tk.Button(buttons_frame, text="Check Student", command=self.check_student, width=10)
+      check_btn.grid(row=0, column=2)
 
-      clear_btn = tk.Button(buttons_frame, text="Clear All", command=self.clear_students,  width=15)
-      clear_btn.grid(row=1, column=0, padx=5, pady=5)
+      clear_btn = tk.Button(buttons_frame, text="Clear All", command=self.clear_students,  width=10)
+      clear_btn.grid(row=1, column=0)
 
-      update_btn = tk.Button(buttons_frame, text="Update Student", command=self.update_student,  width=15)
-      update_btn.grid(row=1, column=1, padx=5, pady=5)
+      update_btn = tk.Button(buttons_frame, text="Update Student", command=self.update_student,  width=10)
+      update_btn.grid(row=1, column=1)
 
-      exit_btn = tk.Button(buttons_frame, text="Exit", command=self.master.quit, width=15)
-      exit_btn.grid(row=1, column=2, padx=5, pady=5)
+      exit_btn = tk.Button(buttons_frame, text="Exit", command=self.master.quit, width=10)
+      exit_btn.grid(row=1, column=2)
 
       # Students Listbox
       list_frame = tk.Frame(self.master)
-      list_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+      list_frame.pack(pady=5, fill=tk.BOTH, expand=True)
 
-      self.listbox = Listbox(list_frame, font=("Helvetica", 14), width=50, height=20)
+      self.listbox = Listbox(list_frame, font=("Helvetica", 12), width=40, height=20)
       self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
       scrollbar = Scrollbar(list_frame, command=self.listbox.yview)
@@ -95,7 +95,6 @@ class App:
     self.save_students()
     self.refresh_listbox()
     self.entry_var.set("")
-    messagebox.showinfo("Success", f"Student {name} added successfully.")
   
   def remove_student(self):
     selected = self.listbox.curselection()
@@ -106,7 +105,6 @@ class App:
     self.students.remove(name)
     self.save_students()
     self.refresh_listbox()
-    messagebox.showinfo("Removed", f"Student {name} removed successfully.")
   
   def check_student(self):
     name = self.entry_var.get().strip().title()
@@ -140,7 +138,6 @@ class App:
         self.students[index] = new_name
         self.save_students()
         self.refresh_listbox()
-        messagebox.showinfo("Updated", f"Student name updated to: {new_name}")
 
   def clear_students(self):
     confirm = messagebox.askyesno("Confirm", "Are you sure you want to clear all students?")
@@ -148,7 +145,7 @@ class App:
         self.students.clear()
         self.save_students()
         self.refresh_listbox()
-        messagebox.showinfo("Cleared", "All students have been cleared.")
+ 
 
   def refresh_listbox(self):
     self.listbox.delete(0, tk.END)
