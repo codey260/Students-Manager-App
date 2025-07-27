@@ -11,8 +11,7 @@ This project demonstrates basic CRUD operations for managing students and shows 
 - **Name:** Students Manager
 - **Type:** Python GUI Application
 - **Purpose:** Add, remove, check, display, and clear students easily through an intuitive GUI.
-- **Original Logic:** Created by `youcefshaaban`.
-- **GUI Integration:** Implemented with `tkinter` and smart in-memory storage.
+- **GUI Integration:** Implemented with `tkinter` and smart data persistence
 
 ---
 
@@ -33,12 +32,8 @@ This project demonstrates basic CRUD operations for managing students and shows 
 
 **How does it store the data?**
 
-- This project uses **In-Memory Serialization** (`pickle`) to store the list of students **inside the program memory only**.
-- The data **will persist as long as the program is running**.
-- **Note:** Once you close and re-open the app, the student list resets because no external files or databases are used.
-
-This approach is perfect for simple demos and educational use.
-
+- This project uses **Smart Data Serialization** (`json`) to store the list of students **in a json file**.
+- The data **will persist as long as the data.json file is found**.
 ---
 
 ## ✅ Requirements
@@ -48,7 +43,7 @@ To run this project, you need:
 - **Python 3.7+**
 - Standard Python library only:
   - `tkinter` (usually bundled with Python)
-  - `pickle` (built-in)
+  - `json` (built-in)
 
 No third-party packages required.
 
@@ -68,54 +63,10 @@ This project runs on:
 
 ```bash
 # 1️⃣ Make sure you have Python installed:
-python --version
+python3 --version
 
 # 2️⃣ Run the Python file:
-python app.py
+python3 app.py
 ```
-
-### If it didn't work then you'll have to install Tkinter
-
-### On Windows
-
-```bash
-# 1️⃣ Installing Tkinter
-pip install tkinter
-```
-
-### On Linux, Mac:
-
-- Installing in a Virtual Environment (Recommended)
-  ```bash
-  python3 -m venv .venv
-  source .venv/bin/activate
-  pip install tkinter
-  ```
-- Installing Tkinter Globally in the system
-
-  - Debian / Ubuntu Based Distros
-
-  ```bash
-  sudo apt install python3-tk
-  ```
-
-  - Fedora
-
-  ```bash
-  sudo dnf install python3-tkinter
-  ```
-
-  - Arch
-
-  ```bash
-  sudo pacman -S tk
-  ```
-
-  ### To Test if tkinter is working type in terminal:
-
-  ```bash
-  python3 -m tkinter
-  # Should Popup a Window
-  ```
 
 ### Then you are ready to go.
