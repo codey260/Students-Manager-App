@@ -1,161 +1,169 @@
-import tkinter as tk
-from tkinter import messagebox, Listbox, Scrollbar, simpledialog
+from customtkinter import *
 import json
 import os
 
 class App:
-  def __init__(self, master):
-    self.master = master
-    self.master.title("Students Manager")
-    self.master.geometry("720x400")
+    def __init__(self, master):
+        self.master = master
+        self.master.title("📚 Students Manager")
+        self.master.geometry("800x500")
+        set_appearance_mode("dark")
+        set_default_color_theme("dark-blue")
 
-    # Create UI Elements
-    self.create_widgets()
+        self.data_file = "data.json"
+        self.students = self.load_students()
 
-    # Data File
-    self.data_file = "data.json"
-    self.students = self.load_students()
+        self.create_widgets()
+        self.refresh_listbox()
 
-    # Refreshing Listbox
-    self.refresh_listbox()
-  
-  def load_students(self):
-    if os.path.exists(self.data_file):
-      with open(self.data_file, "r") as file:
-        try:
-          return json.load(file)
-        except json.JSONDecodeError:
-          return []
-    
-    return []
-  
-  def save_students(self):
-    with open(self.data_file, "w") as file:
-      json.dump(self.students, file, indent=4)
+    def load_students(self):
+        if os.path.exists(self.data_file):
+            with open(self.data_file, "r") as f:
+                try:
+                    return json.load(f)
+                except json.JSONDecodeError:
+                    return []
+        return []
 
-  def create_widgets(self):
-      # Title Label
-      title = tk.Label(self.master, text="Students Manager", font=("Helvetica", 24, "bold"))
-      title.pack(pady=10)
+    def save_students(self):
+        with open(self.data_file, "w") as f:
+            json.dump(self.students, f, indent=4)
 
-      # Student Name Entry
-      self.entry_var = tk.StringVar()
-      entry_frame = tk.Frame(self.master)
-      entry_frame.pack(pady=10)
+    def create_widgets(self):
+        CTkLabel(self.master, text="Students Manager", font=("Arial", 28, "bold")).pack(pady=10)
 
-      entry_label = tk.Label(entry_frame, text="Student Name:", font=("Helvetica", 14))
-      entry_label.pack(side=tk.LEFT, padx=5)
+        # 🔔 Message label
+        self.message_var = StringVar(value="")
+        self.message_label = CTkLabel(self.master, textvariable=self.message_var, text_color="white", font=("Arial", 14))
+        self.message_label.pack(pady=(0, 5))
 
-      entry = tk.Entry(entry_frame, textvariable=self.entry_var, font=("Helvetica", 14), width=30)
-      entry.pack(side=tk.LEFT, padx=5)
+        # Entry Section
+        entry_frame = CTkFrame(self.master, fg_color="transparent")
+        entry_frame.pack(pady=10)
 
-      # Buttons Frame
-      buttons_frame = tk.Frame(self.master)
-      buttons_frame.pack(pady=10)
+        CTkLabel(entry_frame, text="Name:", font=("Arial", 16)).pack(side=LEFT, padx=10)
 
-      add_btn = tk.Button(buttons_frame, text="Add Student", command=self.add_student, width=15)
-      add_btn.grid(row=0, column=0, padx=5)
+        self.entry_var = StringVar()
+        self.entry = CTkEntry(entry_frame, textvariable=self.entry_var, placeholder_text="Enter student name...", width=250)
+        self.entry.pack(side=LEFT)
 
-      remove_btn = tk.Button(buttons_frame, text="Remove Student", command=self.remove_student, width=15)
-      remove_btn.grid(row=0, column=1, padx=5)
+        # Buttons
+        buttons_frame = CTkFrame(self.master, fg_color="transparent")
+        buttons_frame.pack(pady=10)
 
-      check_btn = tk.Button(buttons_frame, text="Check Student", command=self.check_student, width=15)
-      check_btn.grid(row=0, column=2, padx=5)
+        self.create_button(buttons_frame, "Add", self.add_student, 0)
+        self.create_button(buttons_frame, "Remove", self.remove_student, 1)
+        self.create_button(buttons_frame, "Check", self.check_student, 2)
+        self.create_button(buttons_frame, "Update", self.update_student, 3)
+        self.create_button(buttons_frame, "Clear All", self.clear_students, 4)
+        self.create_button(buttons_frame, "Exit", self.master.quit, 5)
 
-      clear_btn = tk.Button(buttons_frame, text="Clear All", command=self.clear_students,  width=15)
-      clear_btn.grid(row=1, column=0, padx=5, pady=5)
+        # Student List
+        self.list_frame = CTkFrame(self.master)
+        self.list_frame.pack(pady=10, padx=20, fill=BOTH, expand=True)
 
-      update_btn = tk.Button(buttons_frame, text="Update Student", command=self.update_student,  width=15)
-      update_btn.grid(row=1, column=1, padx=5, pady=5)
+        self.scroll_frame = CTkScrollableFrame(self.list_frame)
+        self.scroll_frame.pack(fill=BOTH, expand=True)
+        self.student_labels = []
 
-      exit_btn = tk.Button(buttons_frame, text="Exit", command=self.master.quit, width=15)
-      exit_btn.grid(row=1, column=2, padx=5, pady=5)
+    def create_button(self, parent, text, command, col):
+        btn = CTkButton(parent, text=text, command=command, width=120, height=35, corner_radius=10)
+        btn.grid(row=0, column=col, padx=5, pady=5)
 
-      # Students Listbox
-      list_frame = tk.Frame(self.master)
-      list_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+    def show_message(self, text, color="white"):
+        self.message_var.set(text)
+        self.message_label.configure(text_color=color)
+        self.master.after(3000, lambda: self.message_var.set(""))
 
-      self.listbox = Listbox(list_frame, font=("Helvetica", 14), width=50, height=20)
-      self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    def refresh_listbox(self):
+        for widget in self.student_labels:
+            widget.destroy()
+        self.student_labels.clear()
 
-      scrollbar = Scrollbar(list_frame, command=self.listbox.yview)
-      scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-      self.listbox.config(yscrollcommand=scrollbar.set)
+        for student in sorted(self.students):
+            lbl = CTkLabel(self.scroll_frame, text=student, font=("Arial", 16), anchor="w")
+            lbl.pack(fill=X, padx=10, pady=2)
+            self.student_labels.append(lbl)
 
-  
-  def add_student(self):
-    name = self.entry_var.get().strip().title()
-    if not name:
-        messagebox.showwarning("Input Error", "Please enter a student name.")
-        return
-    if name in self.students:
-        messagebox.showinfo("Duplicate", f"{name} is already in the list.")
-        return
-    self.students.append(name)
-    self.save_students()
-    self.refresh_listbox()
-    self.entry_var.set("")
-    messagebox.showinfo("Success", f"Student {name} added successfully.")
-  
-  def remove_student(self):
-    selected = self.listbox.curselection()
-    if not selected:
-        messagebox.showwarning("Selection Error", "Please select a student to remove.")
-        return
-    name = self.listbox.get(selected)
-    self.students.remove(name)
-    self.save_students()
-    self.refresh_listbox()
-    messagebox.showinfo("Removed", f"Student {name} removed successfully.")
-  
-  def check_student(self):
-    name = self.entry_var.get().strip().title()
-    if not name:
-        messagebox.showwarning("Input Error", "Please enter a student name to check.")
-        return
-    if name in self.students:
-        messagebox.showinfo("Found", f"Student {name} is in the list.")
-    else:
-        messagebox.showinfo("Not Found", f"Student {name} not found.")
-  
-  def update_student(self):
-    selected = self.listbox.curselection()
-    
-    if not selected:
-        messagebox.showwarning("Selection error", "Please select a student to update")
-    
-    if selected:
-        old_name = self.listbox.get(selected)
-        new_name = simpledialog.askstring("Update Student", f"Enter new name for {old_name}:")
-        if new_name:
-            new_name = new_name.strip().title()
+    def add_student(self):
+        name = self.entry_var.get().strip().title()
+        if not name:
+            self.show_message("Please enter a student name.", "orange")
+            return
+        if name in self.students:
+            self.show_message(f"{name} already exists.", "red")
+            return
+        self.students.append(name)
+        self.save_students()
+        self.entry_var.set("")
+        self.refresh_listbox()
+        self.show_message(f"{name} added successfully!", "green")
 
-        if not new_name:
-                messagebox.showwarning("Input Error", "New name cannot be empty")
-                return
-        if new_name in self.students:
-                messagebox.showwarning("Duplicate", f"Student {new_name} is already in the list")
-                return
-        index = self.students.index(old_name)
-        self.students[index] = new_name
+    def remove_student(self):
+        name = self.entry_var.get().strip().title()
+        if not name:
+            self.show_message("Enter student name to remove.", "orange")
+            return
+        if name not in self.students:
+            self.show_message(f"{name} not in list.", "red")
+            return
+        self.students.remove(name)
         self.save_students()
         self.refresh_listbox()
-        messagebox.showinfo("Updated", f"Student name updated to: {new_name}")
+        self.entry_var.set("")
+        self.show_message(f"{name} removed.", "green")
 
-  def clear_students(self):
-    confirm = messagebox.askyesno("Confirm", "Are you sure you want to clear all students?")
-    if confirm:
+    def check_student(self):
+        name = self.entry_var.get().strip().title()
+        if not name:
+            self.show_message("Enter student name to check.", "orange")
+            return
+        if name in self.students:
+            self.show_message(f"{name} is in the list.", "skyblue")
+        else:
+            self.show_message(f"{name} not found.", "red")
+
+    def update_student(self):
+        name = self.entry_var.get().strip().title()
+        if not name:
+            self.show_message("Enter a student name to update.", "orange")
+            return
+        if name not in self.students:
+            self.show_message(f"{name} not found.", "red")
+            return
+
+        self.entry_var.set("")
+        self.show_message(f"Type new name for '{name}' and press Enter", "skyblue")
+
+        def apply_update(event):
+            new_name = self.entry_var.get().strip().title()
+            if not new_name:
+                self.show_message("New name cannot be empty.", "orange")
+                return
+            if new_name in self.students:
+                self.show_message("Name already exists.", "red")
+                return
+            index = self.students.index(name)
+            self.students[index] = new_name
+            self.save_students()
+            self.refresh_listbox()
+            self.show_message(f"Updated to {new_name}", "green")
+            self.entry_var.set("")
+            self.entry.unbind("<Return>")
+
+        self.entry.bind("<Return>", apply_update)
+
+    def clear_students(self):
+        if not self.students:
+            self.show_message("Student list is already empty.", "orange")
+            return
         self.students.clear()
         self.save_students()
         self.refresh_listbox()
-        messagebox.showinfo("Cleared", "All students have been cleared.")
-
-  def refresh_listbox(self):
-    self.listbox.delete(0, tk.END)
-    for student in sorted(self.students):
-        self.listbox.insert(tk.END, student)
+        self.show_message("All students cleared.", "green")
 
 if __name__ == "__main__":
-  root = tk.Tk()
-  app = App(root)
-  root.mainloop()
+    root = CTk()
+    app = App(root)
+    root.mainloop()
+
